@@ -35,8 +35,7 @@ const RegisterPage = () => {
         
         {/* Uses the common authentication box class */}
         <div className="auth-box">
-          <h1 className="header-title">SNS Cakebakery</h1> 
-          <p className="header-subtitle">Create Your Account</p>
+          <img src="src/images/sns-cakebakery-logo.png" alt="SNS Cakebakery Logo" className="sns-logo" />
 
           <h2 className="title">REGISTER</h2>
           {/* Uses the common authentication form class */}

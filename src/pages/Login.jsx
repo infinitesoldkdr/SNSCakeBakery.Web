@@ -1,47 +1,63 @@
 // LoginPage.jsx
-import React, { useState, useContext } from "react";
-import { Link } from "react-router-dom";
-// Assuming you import AuthContext as shown in your Navbar.jsx
-// import { AuthContext } from "../context/AuthContext";
-
-// NOTE: The 'styles' object is removed. We rely solely on index.css.
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom"; // Added useNavigate
+import { useAuth } from "../context/AuthContext";
+import { authService } from "../services/authService"; // Using the Service Layer
 
 export default function Login() {
-  // const { login } = useContext(AuthContext); // Uncomment for actual login logic
+  const { login } = useAuth();
+  const navigate = useNavigate(); // Initialize the redirect hook
   
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    if (error) setError(""); // Clear errors when user types
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Login attempt:", formData);
-    // login(formData.email, formData.password); // Uncomment for actual login logic
-    alert("Login successful! (Simulated)");
+    setIsLoading(true);
+    setError("");
+
+    try {
+      // 1. Call the abstracted Auth Service
+      const userResponse = await authService.login(formData);
+      
+      // 2. Update Global Auth Context (sets user in localStorage/state)
+      login(userResponse); 
+      
+      // 3. Principal Engineer Move: Redirect to Homepage immediately
+      // We use { replace: true } so the user can't click "Back" to return to the login page
+      navigate("/", { replace: true });
+
+    } catch (err) {
+      console.error("Login Error:", err);
+      setError(err.message || "Invalid email or password.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    // Replaced styles.outerContainer with className="page-wrapper" or a similar container
     <div className="page-wrapper page-container-auth">
-      
-      {/* Replaced styles.container with the second half of the container class */}
       <div className="page-container-auth">
-        
-        {/* Replaced styles.loginBox with className="auth-box" */}
         <div className="auth-box">
           <h1 className="header-title"> 
             <img src="src/images/sns-cakebakery-logo.png" alt="SNS Cakebakery Logo" className="sns-logo" />
           </h1>
-          {/* Replaced styles.form with className="auth-form" */}
+
+          {/* Display error message if login fails */}
+          {error && <p className="auth-error-message" style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
+
           <form className="auth-form" onSubmit={handleLogin}>
-            
-            {/* Replaced styles.input with className="auth-input" */}
             <input
               type="email"
               name="email"
@@ -49,6 +65,7 @@ export default function Login() {
               value={formData.email}
               onChange={handleChange}
               className="auth-input" 
+              disabled={isLoading}
               required
             />
             <input
@@ -58,32 +75,29 @@ export default function Login() {
               value={formData.password}
               onChange={handleChange}
               className="auth-input" 
+              disabled={isLoading}
               required
             />
             
-            {/* Replaced styles.button with className="auth-button" */}
-            <button type="submit" className="auth-button">
-              LOG IN
+            <button type="submit" className="auth-button" disabled={isLoading}>
+              {isLoading ? "LOGGING IN..." : "LOG IN"}
             </button>
           </form>
           
-          {/* Replaced styles.registerLink with className="auth-link-text" */}
           <p className="auth-link-text">
             Don't have an account? <Link to="/register" className="auth-link">Register Here</Link>
           </p>
         </div>
 
-        {/* Using global footer classes */}
         <div className="footer-container">
           <div className="social-icons">
-            <Link to="#"><span className="social-icon">IG</span></Link>
-            <Link to="#"><span className="social-icon">FB</span></Link>
-            <Link to="#"><span className="social-icon">TW</span></Link>
-            <Link to="#"><span className="social-icon">PT</span></Link>
+            <span className="social-icon">IG</span>
+            <span className="social-icon">FB</span>
+            <span className="social-icon">TW</span>
+            <span className="social-icon">PT</span>
           </div>
-          <p className="footer-text">© 2025 SNS Cakebakery. All the Reserved.</p>
+          <p className="footer-text">© 2025 SNS Cakebakery. All Rights Reserved.</p>
         </div>
-
       </div>
     </div>
   );
