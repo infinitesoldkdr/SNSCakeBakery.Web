@@ -35,10 +35,9 @@ export default function Login() {
         
         {/* Replaced styles.loginBox with className="auth-box" */}
         <div className="auth-box">
-          <h1 className="header-title">SNS Cakebakery</h1>
-          <p className="header-subtitle">Welcome Back</p>
-
-          <h2 className="title">LOGIN</h2>
+          <h1 className="header-title"> 
+            <img src="src/images/sns-cakebakery-logo.png" alt="SNS Cakebakery Logo" className="sns-logo" />
+          </h1>
           {/* Replaced styles.form with className="auth-form" */}
           <form className="auth-form" onSubmit={handleLogin}>
             
@@ -82,7 +81,7 @@ export default function Login() {
             <Link to="#"><span className="social-icon">TW</span></Link>
             <Link to="#"><span className="social-icon">PT</span></Link>
           </div>
-          <p className="footer-text">© 2024 SNS Cakebakery. All the Reserved.</p>
+          <p className="footer-text">© 2025 SNS Cakebakery. All the Reserved.</p>
         </div>
 
       </div>
