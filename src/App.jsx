@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import MainLayout from "./components/MainLayout.jsx";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import { AuthProvider } from "./context/AuthContext";
 
@@ -19,20 +20,29 @@ export default function App() {
     return (
         <AuthProvider>
             <BrowserRouter>
-                <Navbar />
                 <Routes>
-                    <Route path="/home" element={<Home />} />
+                    {/* --- AUTH GROUP (No Navbar) --- */}
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-                    <Route path="/menu" element={<Menu />} />
-                    <Route path="/gallery" element={<Gallery />} />
-                    <Route path="/checkout" element={<Checkout />} />
-                    <Route path="/contact" element={<Contact />} />
-                    <Route path="/orders" element={ <ProtectedRoute> <Orders /></ProtectedRoute>  } />
-                    <Route path="/createorder" element={  <CreateOrder /> } />
                     <Route path="/google-form" element={<GoogleFormRedirect />} />
-                    {/** Force redirect homepage → login */}
-                    <Route path="/" element={<Navigate to="/login" replace />} />
+
+                    {/* --- MAIN GROUP (Has Navbar) --- */}
+                    <Route element={<MainLayout />}>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/home" element={<Home />} />
+                        <Route path="/menu" element={<Menu />} />
+                        <Route path="/gallery" element={<Gallery />} />
+                        <Route path="/checkout" element={<Checkout />} />
+                        <Route path="/contact" element={<Contact />} />
+                        <Route path="/createorder" element={<CreateOrder />} />
+                        
+                        {/* Protected Routes inside the Layout */}
+                        <Route path="/orders" element={
+                            <ProtectedRoute>
+                                <Orders />
+                            </ProtectedRoute>
+                        } />
+                    </Route>
                 </Routes>
             </BrowserRouter>
         </AuthProvider>

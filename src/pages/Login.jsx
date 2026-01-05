@@ -36,7 +36,7 @@ export default function Login() {
       
       // 3. Principal Engineer Move: Redirect to Homepage immediately
       // We use { replace: true } so the user can't click "Back" to return to the login page
-      navigate("/", { replace: true });
+      navigate("/home", { replace: true });
 
     } catch (err) {
       console.error("Login Error:", err);
