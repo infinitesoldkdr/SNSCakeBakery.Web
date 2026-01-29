@@ -1,17 +1,17 @@
-// src/components/MainLayout.jsx
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import Navbar from './Navbar';
+import React from "react";
+import { Outlet } from "react-router-dom";
+import Navbar from "./Navbar";
 
-export default function MainLayout() {
+const MainLayout = () => {
   return (
     <>
-      <Navbar />
-      <main>
-        {/* Outlet is where the child route (Home, Menu, etc.) will be rendered */}
-        <Outlet />
+      <Navbar /> 
+      <main className="content-container">
+        {/* All your protected pages (Home, Menu, etc.) will appear here */}
+        <Outlet /> 
       </main>
-      {/* You can add a Footer here if you want it on all main pages too */}
     </>
   );
-}
+};
+
+export default MainLayout;

@@ -21,28 +21,24 @@ export default function App() {
         <AuthProvider>
             <BrowserRouter>
                 <Routes>
-                    {/* --- AUTH GROUP (No Navbar) --- */}
+                    {/* --- PUBLIC ROUTES (No Navbar) --- */}
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-                    <Route path="/google-form" element={<GoogleFormRedirect />} />
 
-                    {/* --- MAIN GROUP (Has Navbar) --- */}
-                    <Route element={<MainLayout />}>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/home" element={<Home />} />
-                        <Route path="/menu" element={<Menu />} />
-                        <Route path="/gallery" element={<Gallery />} />
-                        <Route path="/checkout" element={<Checkout />} />
-                        <Route path="/contact" element={<Contact />} />
-                        <Route path="/createorder" element={<CreateOrder />} />
-                        
-                        {/* Protected Routes inside the Layout */}
-                        <Route path="/orders" element={
-                            <ProtectedRoute>
-                                <Orders />
-                            </ProtectedRoute>
-                        } />
+                    {/* --- PROTECTED GROUP --- */}
+                    <Route element={<ProtectedRoute />}>
+                        {/* --- WRAP PAGES IN MAINLAYOUT --- */}
+                        <Route element={<MainLayout />}>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/home" element={<Home />} />
+                            <Route path="/menu" element={<Menu />} />
+                            <Route path="/orders" element={<Orders />} />
+                            <Route path="/gallery" element={<Gallery />} />
+                            <Route path="/createorder" element={<CreateOrder />} />
+                            <Route path="/checkout" element={<Checkout />} />
+                        </Route>
                     </Route>
+                    <Route path="*" element={<Navigate to="/login" replace />} />
                 </Routes>
             </BrowserRouter>
         </AuthProvider>

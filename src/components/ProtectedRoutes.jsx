@@ -1,10 +1,19 @@
-import { useContext } from "react";
-import { Navigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-export default function ProtectedRoute({ children }) {
-    const { token } = useContext(AuthContext);
+const ProtectedRoute = () => {
+    const { user, loading } = useAuth();
+    const location = useLocation();
 
-    if (!token) return <Navigate to="/login" />;
-    return children;
-}
+    if (loading) {
+        return <div className="loading-screen">Verifying Session...</div>;
+    }
+
+    // If logged in, render the 'Outlet' (the child routes)
+    // If not, redirect to login
+    return user 
+        ? <Outlet /> 
+        : <Navigate to="/login" state={{ from: location }} replace />;
+};
+
+export default ProtectedRoute;

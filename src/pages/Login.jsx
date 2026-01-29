@@ -1,8 +1,7 @@
-// LoginPage.jsx
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Added useNavigate
+import { Link, useNavigate } from "react-router-dom"; 
 import { useAuth } from "../context/AuthContext";
-import { authService } from "../services/authService"; // Using the Service Layer
+import { authService } from "../services/authService"; // This now uses Firebase
 
 export default function Login() {
   const { login } = useAuth();
@@ -22,29 +21,43 @@ export default function Login() {
     if (error) setError(""); // Clear errors when user types
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
+const handleLogin = async (e) => {
+  e.preventDefault();
+  setIsLoading(true);
+  setError("");
 
-    try {
-      // 1. Call the abstracted Auth Service
-      const userResponse = await authService.login(formData);
-      
-      // 2. Update Global Auth Context (sets user in localStorage/state)
-      login(userResponse); 
-      
-      // 3. Principal Engineer Move: Redirect to Homepage immediately
-      // We use { replace: true } so the user can't click "Back" to return to the login page
-      navigate("/home", { replace: true });
+  try {
+    // 1. Firebase login through our service
+    const user = await authService.login(formData);
+    
+    // 2. Pass the Firebase user object to your Context
+    // Firebase users have properties like user.email and user.uid
+    login(user); 
+    
+    // 3. Redirect
+    navigate("/home", { replace: true });
 
-    } catch (err) {
-      console.error("Login Error:", err);
-      setError(err.message || "Invalid email or password.");
-    } finally {
-      setIsLoading(false);
+  } catch (err) {
+    console.error("Login Error:", err);
+    
+    // Principal Move: Map Firebase error codes to user-friendly messages
+    switch (err.code) {
+      case 'auth/user-not-found':
+        setError("No account found with this email.");
+        break;
+      case 'auth/wrong-password':
+        setError("Incorrect password.");
+        break;
+      case 'auth/invalid-email':
+        setError("Invalid email format.");
+        break;
+      default:
+        setError("Failed to login. Please check your credentials.");
     }
-  };
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <div className="page-wrapper page-container-auth">
