@@ -13,7 +13,7 @@ const menuData = {
     { id: 4, name: "Red Velvet Swirl", price: 3.5, description: "Moist red velvet with cream cheese frosting." },
     { id: 5, name: "Pistachio Rose", price: 4.0, description: "Subtle pistachio flavor topped with rosewater buttercream." },
   ],
-  desserts: [
+  Cookies: [
     { id: 6, name: "Salted Caramel Tart", price: 8.0, description: "Flaky crust filled with decadent salted caramel." },
     { id: 7, name: "Artisan Macaron Box (6 pcs)", price: 18.0, description: "Assorted seasonal flavors." },
   ],
