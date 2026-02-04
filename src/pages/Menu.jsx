@@ -1,77 +1,113 @@
-// MenuPage.jsx
-import React, { useState } from "react";
-import { Link } from "react-router-dom"; 
-// NOTE: All styles are now referenced from index.css
-
-const menuData = {
-  cakes: [
-    { id: 1, name: "Signature Vanilla Bean", price: 65.0, description: "Classic vanilla cake with Swiss meringue buttercream." },
-    { id: 2, name: "Lemon Raspberry Dream", price: 70.0, description: "Zesty lemon layers with fresh raspberry filling." },
-    { id: 3, name: "Dark Chocolate Espresso", price: 75.0, description: "Rich dark chocolate cake with espresso ganache." },
-  ],
-  cupcakes: [
-    { id: 4, name: "Red Velvet Swirl", price: 3.5, description: "Moist red velvet with cream cheese frosting." },
-    { id: 5, name: "Pistachio Rose", price: 4.0, description: "Subtle pistachio flavor topped with rosewater buttercream." },
-  ],
-  Cookies: [
-    { id: 6, name: "Salted Caramel Tart", price: 8.0, description: "Flaky crust filled with decadent salted caramel." },
-    { id: 7, name: "Artisan Macaron Box (6 pcs)", price: 18.0, description: "Assorted seasonal flavors." },
-  ],
-};
+import React, { useState, useEffect, useMemo } from "react";
+import { apiClient } from "../services/apiClient";
+// Ensure this path matches where you saved the 'Delicious Cake' image
+import cakeFallback from "../assets/cake-placeholder.png"; 
 
 export default function MenuPage() {
-  const [activeCategory, setActiveCategory] = useState('cakes');
+  const [products, setProducts] = useState([]);
+  const [activeCategory, setActiveCategory] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const renderProductCard = (product) => (
-    <div key={product.id} className="product-card menu-product-card">
-      <div className="product-image-placeholder menu-image-placeholder">
-        [Image: {product.name}]
-      </div>
-      <h4 className="product-name">{product.name}</h4>
-      <p className="product-description">{product.description}</p>
-      <p className="product-price menu-price">${product.price.toFixed(2)}</p>
-      <button className="action-button gallery-btn add-to-cart-btn">
-        Add to Cart
-      </button>
-    </div>
-  );
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchMenu = async () => {
+      try {
+        setLoading(true);
+        // Using the functional call style that matches Login.js
+        const response = await apiClient("/products", { method: "GET" });
+        
+        // Normalize response data from custom wrapper
+        const data = response.data || (typeof response.json === 'function' ? await response.json() : response);
+
+        if (isMounted) {
+          const normalizedData = Array.isArray(data) ? data : [];
+          // OVERWRITE state (don't append) to prevent duplication
+          setProducts(normalizedData);
+          
+          if (normalizedData.length > 0 && !activeCategory) {
+            const firstCat = normalizedData[0].productTypeName || normalizedData[0].PRODUCTTYPENAME;
+            setActiveCategory(firstCat);
+          }
+        }
+      } catch (err) {
+        if (isMounted) {
+          console.error("API Error on Port 5050:", err);
+          setError("Failed to load products. Check backend connection.");
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchMenu();
+    return () => { isMounted = false; };
+  }, [activeCategory]); // Dependency included to satisfy ESLint
+
+  // Memoize categories to prevent recalculating on every render
+  const categories = useMemo(() => {
+    return [...new Set(products.map(p => p.productTypeName || p.PRODUCTTYPENAME))];
+  }, [products]);
+
+  // Memoize filtered list to prevent "ghost" duplicates during transitions
+  const filteredProducts = useMemo(() => {
+    return products.filter(p => 
+      (p.productTypeName || p.PRODUCTTYPENAME) === activeCategory
+    );
+  }, [products, activeCategory]);
+
+  if (loading) return <div className="page-wrapper"><h3>Baking the menu...</h3></div>;
+  if (error) return <div className="page-wrapper text-danger"><h3>{error}</h3></div>;
 
   return (
-    // Uses global page wrapper
     <div className="page-wrapper">
-        <div className="content-box">
-          
-          <h2 className="page-title">OUR FULL MENU</h2>
-          <p className="page-description">
-            Explore our ready-to-order cakes, cupcakes, and desserts. For custom requests, please visit the custom order page.
-          </p>
-          
-          {/* --- Category Tabs --- */}
-          <div className="menu-tabs">
-            {Object.keys(menuData).map(category => (
-              <button
-                key={category}
-                className={`menu-tab-button ${activeCategory === category ? 'active-tab' : ''}`}
-                onClick={() => setActiveCategory(category)}
-              >
-                {category.toUpperCase()}
-              </button>
-            ))}
-            <Link to="/create-order" className="menu-tab-button custom-order-tab">
-                CUSTOM ORDERS
-            </Link>
-          </div>
-          
-          {/* --- Product Grid --- */}
-          <div className="menu-product-grid">
-            {menuData[activeCategory].map(renderProductCard)}
-          </div>
-
+      <div className="content-box">
+        <h2 className="page-title">OUR FULL MENU</h2>
+        
+        <div className="menu-tabs">
+          {categories.map(cat => (
+            <button
+              key={`tab-${cat}`} 
+              className={`menu-tab-button ${activeCategory === cat ? 'active-tab' : ''}`}
+              onClick={() => setActiveCategory(cat)}
+            >
+              {(cat || "UNNAMED").toUpperCase()}
+            </button>
+          ))}
         </div>
-      
-      {/* Footer component (using global classes) */}
-      <div className="footer-container">
-        <p className="footer-text">© 2025 SNS Cakebakery. All Rights Reserved.</p>
+
+        <div className="menu-product-grid">
+          {filteredProducts.map((product, index) => {
+            const name = product.name || product.NAME;
+            const price = product.basePrice || product.BASEPRICE;
+            const img = product.mainImageUrl || product.MAINIMAGEURL;
+            const id = product.productId || product.PRODUCTID;
+            const category = product.productTypeName || product.PRODUCTTYPENAME;
+
+            // Principal Fix: Guaranteed unique key to resolve "Key 16" console error
+            const uniqueKey = `${id}-${category}-${index}`;
+
+            return (
+              <div key={uniqueKey} className="product-card menu-product-card">
+                <div className="menu-image-container">
+                  <img 
+                    src={img || cakeFallback} 
+                    alt={name} 
+                    className="menu-product-image"
+                    loading="lazy"
+                    onError={(e) => { e.target.src = cakeFallback; }}
+                  />
+                </div>
+                <h4 className="product-name">{name}</h4>
+                <p className="product-price">${Number(price || 0).toFixed(2)}</p>
+                <button className="action-button gallery-btn add-to-cart-btn">
+                  Add to Cart
+                </button>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

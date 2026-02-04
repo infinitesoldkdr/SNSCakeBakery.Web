@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom"; 
 import { useAuth } from "../context/AuthContext";
 import { authService } from "../services/authService"; // This now uses Firebase
+import { apiClient } from "../services/apiClient";
 
 export default function Login() {
   const { login } = useAuth();
@@ -27,33 +28,35 @@ const handleLogin = async (e) => {
   setError("");
 
   try {
-    // 1. Firebase login through our service
+    // 1. Firebase login (The Identity check)
     const user = await authService.login(formData);
     
-    // 2. Pass the Firebase user object to your Context
-    // Firebase users have properties like user.email and user.uid
+    // 2. Get the Token (The "Passport")
+    const idToken = await user.getIdToken();
+
+    // 3. Sync with your .NET API (The "Session" check)
+    // We send the token in the header and the user info in the body
+await apiClient("/auth/sync", {
+  method: "POST",
+  body: JSON.stringify({
+    email: user.email,
+    firstName: "", 
+    lastName: ""
+  }),
+  // Your wrapper handles the Authorization header automatically, 
+  // but you can pass it here to be safe:
+  headers: {
+    Authorization: `Bearer ${idToken}`
+  }
+});
+
+    // 4. Now that the Backend is synced, update Context and Redirect
     login(user); 
-    
-    // 3. Redirect
     navigate("/home", { replace: true });
 
   } catch (err) {
-    console.error("Login Error:", err);
-    
-    // Principal Move: Map Firebase error codes to user-friendly messages
-    switch (err.code) {
-      case 'auth/user-not-found':
-        setError("No account found with this email.");
-        break;
-      case 'auth/wrong-password':
-        setError("Incorrect password.");
-        break;
-      case 'auth/invalid-email':
-        setError("Invalid email format.");
-        break;
-      default:
-        setError("Failed to login. Please check your credentials.");
-    }
+    console.error("FLOW STOPPED:", err);
+    setError("Authentication failed during sync. Check backend connection.");
   } finally {
     setIsLoading(false);
   }

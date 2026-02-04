@@ -17,30 +17,34 @@ import { Navigate } from "react-router-dom";
 import Home from "./pages/Home.jsx";
 
 export default function App() {
-    return (
-        <AuthProvider>
-            <BrowserRouter>
-                <Routes>
-                    {/* --- PUBLIC ROUTES (No Navbar) --- */}
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
 
-                    {/* --- PROTECTED GROUP --- */}
-                    <Route element={<ProtectedRoute />}>
-                        {/* --- WRAP PAGES IN MAINLAYOUT --- */}
-                        <Route element={<MainLayout />}>
-                            <Route path="/" element={<Home />} />
-                            <Route path="/home" element={<Home />} />
-                            <Route path="/menu" element={<Menu />} />
-                            <Route path="/orders" element={<Orders />} />
-                            <Route path="/gallery" element={<Gallery />} />
-                            <Route path="/createorder" element={<CreateOrder />} />
-                            <Route path="/checkout" element={<Checkout />} />
-                        </Route>
-                    </Route>
-                    <Route path="*" element={<Navigate to="/login" replace />} />
-                </Routes>
-            </BrowserRouter>
-        </AuthProvider>
-    );
+          {/* Public */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          {/* App Layout */}
+          <Route element={<MainLayout />}>
+            <Route index element={<Home />} />
+            <Route path="menu" element={<Menu />} />
+            <Route path="gallery" element={<Gallery />} />
+            <Route path="createorder" element={<CreateOrder />} />
+            <Route path="checkout" element={<Checkout />} />
+          </Route>
+
+          {/* Protected */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/orders" element={<Orders />} />
+          </Route>
+
+          {/* Catch-all */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  );
 }
