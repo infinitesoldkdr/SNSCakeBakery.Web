@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
 import snsLogo from "./assets/sns_logo.png";
 
 // Modern SVG Icons (Tinted to Cocoa #4A2C2A)
@@ -105,8 +104,10 @@ const ComingSoon = () => {
           <MenuSection title="Cakes" items={menuData.Cakes} isMasterOpen={isMenuVisible} />
           <MenuSection title="Cupcakes" items={menuData.Cupcakes} isMasterOpen={isMenuVisible} />
           <MenuSection title="Cookies" items={menuData.Cookies} isMasterOpen={isMenuVisible} />
-          <p style={{ fontSize: '0.75rem', fontStyle: 'italic', marginTop: '15px', color: '#A08070', textAlign: 'center' }}>
-            Prices listed are the base price per serving. Custom designs may incur additional charges.
+          <p style={{ fontSize: '0.75rem', fontStyle: 'italic', marginTop: '15px', color: '#A08070', textAlign: 'center', lineHeight: '1.5' }}>
+            Prices listed are the base price per serving.<br />
+            Sugar cookies with royal icing are an additional $1 per serving.<br />
+            Custom designs may incur additional charges.
           </p>
         </div>
 
@@ -139,13 +140,11 @@ const ComingSoon = () => {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/coming-soon" element={<ComingSoon />} />
-          <Route path="*" element={<Navigate to="/coming-soon" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/coming-soon" element={<ComingSoon />} />
+        <Route path="*" element={<Navigate to="/coming-soon" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
