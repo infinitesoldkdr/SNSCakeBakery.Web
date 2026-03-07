@@ -176,6 +176,52 @@ button:focus-visible, .action-button:focus-visible {
 .navbar .checkout-button { display: block; width: 100%; text-align: center; background-color: var(--color-primary-blush); color: var(--color-white); font-weight: bold; font-size: 14px; text-transform: uppercase; transition: background-color 0.3s; }
 .navbar .empty-cart { font-size: 14px; color: #888; text-align: center; }
 
+/* --- Social Icon Integration --- */
+.navbar-brand-group {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Space between Brand Text and Icons */
+}
+
+.nav-social-icons {
+    display: flex;
+    gap: 8px; /* Space between icons */
+    align-items: center;
+    margin-left: 4px;
+}
+
+.nav-social-link {
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s ease;
+}
+
+.nav-social-link:hover {
+    transform: translateY(-1px);
+}
+
+.social-icon-mask {
+    width: 18px;  /* ~20% smaller than 24px */
+    height: 18px;
+    background-color: var(--color-secondary-brown); /* Match the Brand color */
+    mask-image: var(--icon-url);
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    /* Prefixes for browser compatibility */
+    -webkit-mask-image: var(--icon-url);
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.nav-social-link:hover .social-icon-mask {
+    opacity: 1;
+    background-color: var(--color-primary-blush); /* Subtle color shift on hover */
+}
+
 /* ========================================================================= */
 /* 3. Global Page Structure & Components */
 /* ========================================================================= */

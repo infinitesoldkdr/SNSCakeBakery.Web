@@ -31,6 +31,7 @@ export default function App() {
             <Route index element={<Home />} />
             <Route path="menu" element={<Menu />} />
             <Route path="gallery" element={<Gallery />} />
+            <Route path="contact" element={<Contact />} />
             <Route path="createorder" element={<CreateOrder />} />
             <Route path="checkout" element={<Checkout />} />
           </Route>
