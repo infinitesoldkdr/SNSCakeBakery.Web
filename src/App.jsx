@@ -41,7 +41,7 @@ const MenuSection = ({ title, subtext, items }) => {
 const ComingSoon = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
-  // Updates the favicon dynamically from the assets folder
+  // Force favicon update from assets
   useEffect(() => {
     const link = document.querySelector("link[rel~='icon']");
     if (link) {
@@ -84,19 +84,22 @@ const ComingSoon = () => {
       
       <div style={{ padding: '0px 24px 40px 24px', borderRadius: '32px', backgroundColor: '#FFFFFF', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', maxWidth: '500px', width: '100%', textAlign: 'center' }}>
         
+        {/* Logo Section */}
         <div style={{ marginTop: '-25px', marginBottom: '10px' }}> 
           <img src={snsLogo} alt="SNS Cake Bakery" style={{ width: '100%', maxWidth: '380px', margin: '0 auto', display: 'block' }} />
         </div>
         
         <div style={{ width: '40px', height: '2.5px', backgroundColor: '#D4A373', margin: '0 auto 24px auto' }}></div>
 
+        {/* Heading Section */}
         <h2 style={{ fontSize: '1.8rem', fontWeight: '600', marginBottom: '12px', color: '#5D4037', fontFamily: 'serif' }}>
           Something Sweet is Baking.
         </h2>
         <p style={{ fontSize: '1rem', lineHeight: '1.5', color: '#757575', marginBottom: '32px', padding: '0 10px' }}>
-          Welcome! We are currently refreshing our digital storefront. Follow us for updates or browse our menu below.
+          Welcome! We are currently refreshing our digital storefront. View our menu or start an order request below.
         </p>
         
+        {/* Action Buttons */}
         <button 
           onClick={() => setIsMenuVisible(!isMenuVisible)} 
           style={{ width: '100%', padding: '16px', background: '#F9F1EB', border: 'none', borderRadius: '12px', cursor: 'pointer', color: '#1A1A1A', fontWeight: '700', fontSize: '1rem', marginBottom: '16px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}
@@ -119,11 +122,21 @@ const ComingSoon = () => {
           </div>
         )}
 
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeo4RvA71NqZmQGigrypF91kL7pB7nSwmDRHL51ThcP1xDVzg/viewform" target="_blank" rel="noreferrer" 
-          style={{ display: 'block', padding: '18px', backgroundColor: '#45322E', color: '#FFFFFF', textDecoration: 'none', borderRadius: '50px', fontWeight: '700', marginBottom: '16px', fontSize: '1rem' }}>
-          SUBMIT AN ORDER REQUEST
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeo4RvA71NqZmQGigrypF91kL7pB7nSwmDRHL51ThcP1xDVzg/viewform" 
+           target="_blank" 
+           rel="noreferrer" 
+           style={{ display: 'block', padding: '18px', backgroundColor: '#45322E', color: '#FFFFFF', textDecoration: 'none', borderRadius: '50px', fontWeight: '700', marginBottom: '16px', fontSize: '1rem' }}>
+          REQUEST A CUSTOM CAKE
         </a>
 
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSf-n2ObSZfVgjDMMrgF_CC507N2oDOtwEZ-RYDogecwCjvq9Q/viewform" 
+           target="_blank" 
+           rel="noreferrer" 
+           style={{ display: 'block', padding: '18px', backgroundColor: '#FFFFFF', color: '#4A2C2A', border: '2px solid #4A2C2A', textDecoration: 'none', borderRadius: '50px', fontWeight: '700', marginBottom: '32px', fontSize: '1rem' }}>
+          REQUEST BALLOON DECOR
+        </a>
+
+        {/* Social Icons */}
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '32px', paddingTop: '24px', borderTop: '1px solid #F0F0F0', gap: '24px' }}>
           <a href="https://instagram.com/snscakebakery" target="_blank" rel="noreferrer" style={{ color: '#1A1A1A' }}><Icons.Instagram /></a>
           <a href="https://www.facebook.com/p/SNS-Cake-Bakery-100090057444715/" target="_blank" rel="noreferrer" style={{ color: '#1A1A1A' }}><Icons.Facebook /></a>
@@ -132,8 +145,9 @@ const ComingSoon = () => {
         </div>
       </div>
 
+      {/* Footer Section */}
       <p style={{ fontSize: '0.7rem', letterSpacing: '0.2em', color: '#A68E82', fontWeight: '600', marginTop: '40px', textTransform: 'uppercase' }}>
-        SNS CAKE BAKERY | EST. 2026
+        SNS CAKE BAKERY | EST. 2020
       </p>
     </div>
   );
