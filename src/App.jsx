@@ -1,50 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import snsLogo from "./assets/sns_logo.png";
+import favicon from "./assets/SNSLogo.ico";
+import { Instagram, Facebook, Youtube, ChevronUp, ChevronDown } from "lucide-react"; 
 
-// Modern SVG Icons (Tinted to Cocoa #4A2C2A)
 const Icons = {
-  Instagram: () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>,
-  Facebook: () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>,
-  YouTube: () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.42a2.78 2.78 0 0 0-1.94 2C1 8.12 1 12 1 12s0 3.88.46 5.58a2.78 2.78 0 0 0 1.94 2c1.72.42 8.6.42 8.6.42s6.88 0 8.6-.42a2.78 2.78 0 0 0 1.94-2C23 15.88 23 12 23 12s0-3.88-.46-5.58z"></path><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"></polygon></svg>,
-  Pinterest: () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="8" x2="12" y2="22"></line><path d="M9 13c-1.5-1.5-1.5-4.5 0-6s4.5-1.5 6 0 1.5 4.5 0 6"></path><path d="M12 8c2 0 4 1 4 3 0 2.5-2 4.5-4 4.5s-4-2-4-4.5c0-2 2-3 4-3z"></path></svg>,
-  Chevron: ({ open }) => <svg style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: '0.3s' }} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"></path></svg>
+  Instagram: () => <Instagram size={22} />,
+  Facebook: () => <Facebook size={22} />,
+  YouTube: () => <Youtube size={22} />,
+  Pinterest: () => (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.966 1.406-5.966s-.359-.72-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.215-.174.26-.401.154-1.495-.697-2.43-2.888-2.43-4.649 0-3.785 2.75-7.259 7.929-7.259 4.164 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146 1.124.347 2.317.535 3.554.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592 0 11.972 0" />
+    </svg>
+  )
 };
 
-const MenuSection = ({ title, items, isMasterOpen }) => {
-  const [isLocalOpen, setIsLocalOpen] = useState(false);
-  const isOpen = isMasterOpen || isLocalOpen;
-
+const MenuSection = ({ title, subtext, items }) => {
+  const [isOpen, setIsOpen] = useState(true);
   return (
-    <div style={{ width: '100%', borderBottom: '1px solid #F5E6D3' }}>
-      <button 
-        onClick={() => setIsLocalOpen(!isLocalOpen)}
-        style={{ 
-          width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
-          padding: '18px 0', background: 'none', border: 'none', cursor: 'pointer',
-          color: '#4A2C2A', fontWeight: '600', fontSize: '1.1rem', fontFamily: 'inherit'
-        }}
+    <div style={{ marginBottom: '24px', textAlign: 'left' }}>
+      <div 
+        onClick={() => setIsOpen(!isOpen)}
+        style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', borderBottom: '1px solid #E5E5E5', paddingBottom: '6px', marginBottom: '14px' }}
       >
-        <span style={{ textAlign: 'left' }}>
-          {title} <span style={{ fontSize: '0.8rem', fontWeight: '400', opacity: 0.8 }}>(Price per serving)</span>
-        </span>
-        <Icons.Chevron open={isOpen} />
-      </button>
-      <div style={{ 
-        maxHeight: isOpen ? '600px' : '0', 
-        overflow: 'hidden', 
-        transition: 'max-height 0.4s ease-in-out',
-        textAlign: 'left'
-      }}>
-        <div style={{ paddingBottom: '20px' }}>
-          {items.map((item, idx) => (
-            <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '0.95rem', color: '#6F4E37' }}>
-              <span>{item.name}</span>
-              <span style={{ fontWeight: '700' }}>{item.price}</span>
-            </div>
-          ))}
-        </div>
+        <h3 style={{ fontSize: '1.05rem', color: '#1A1A1A', fontWeight: '800', margin: 0, fontFamily: 'serif', letterSpacing: '0.02em' }}>
+          {title.toUpperCase()} <span style={{ fontSize: '0.65rem', color: '#757575', fontWeight: '400', fontFamily: 'sans-serif' }}>({subtext})</span>
+        </h3>
+        {isOpen ? <ChevronUp size={18} color="#757575" /> : <ChevronDown size={18} color="#757575" />}
       </div>
+      {isOpen && items.map((item, idx) => (
+        <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '0.95rem', fontFamily: 'sans-serif' }}>
+          <span style={{ color: '#4A4A4A' }}>{item.name}</span>
+          <span style={{ fontWeight: '700', color: '#1A1A1A' }}>${item.price}</span>
+        </div>
+      ))}
     </div>
   );
 };
@@ -52,86 +41,98 @@ const MenuSection = ({ title, items, isMasterOpen }) => {
 const ComingSoon = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
-  const menuData = {
-    Cakes: [
-      { name: "Vanilla Bean", price: "$8" }, { name: "Lemon", price: "$8" }, { name: "Strawberry", price: "$8" },
-      { name: "Orange Creamsicle", price: "$8" }, { name: "Chocolate Fudge", price: "$8" }, { name: "Funfetti", price: "$8" }, { name: "Key Lime", price: "$8" }
-    ],
-    Cupcakes: [
-      { name: "Vanilla Bean", price: "$5" }, { name: "Lemon Raspberry", price: "$5" }, { name: "Strawberry Lemonade", price: "$5" },
-      { name: "Pineapple Coconut", price: "$5" }, { name: "Chocolate Fudge", price: "$5" }, { name: "Funfetti", price: "$5" }, { name: "Key Lime", price: "$5" }
-    ],
-    Cookies: [
-      { name: "Vanilla Bean Sugar", price: "$4" }, { name: "Lemon Sugar", price: "$4" }, { name: "Strawberry Sugar", price: "$4" },
-      { name: "Almond Sugar", price: "$4" }, { name: "Chocolate Chip", price: "$4" }, { name: "White Chocolate Macadamia", price: "$4" }, { name: "Oatmeal", price: "$4" }
-    ]
-  };
+  // Updates the favicon dynamically from the assets folder
+  useEffect(() => {
+    const link = document.querySelector("link[rel~='icon']");
+    if (link) {
+      link.href = favicon;
+    }
+  }, []);
+
+  const menuData = [
+    {
+      title: "Cakes", subtext: "PRICE PER SERVING",
+      items: [
+        { name: "Vanilla Bean", price: 8 }, { name: "Lemon", price: 8 },
+        { name: "Strawberry", price: 8 }, { name: "Orange Creamsicle", price: 8 },
+        { name: "Chocolate Fudge", price: 8 }, { name: "Funfetti", price: 8 },
+        { name: "Key Lime", price: 8 }
+      ]
+    },
+    {
+      title: "Cupcakes", subtext: "PRICE PER SERVING",
+      items: [
+        { name: "Vanilla Bean", price: 5 }, { name: "Lemon Raspberry", price: 5 },
+        { name: "Strawberry Lemonade", price: 5 }, { name: "Pineapple Coconut", price: 5 },
+        { name: "Chocolate Fudge", price: 5 }, { name: "Funfetti", price: 5 },
+        { name: "Key Lime", price: 5 }
+      ]
+    },
+    {
+      title: "Cookies", subtext: "PRICE PER SERVING",
+      items: [
+        { name: "Vanilla Bean Sugar", price: 4 }, { name: "Lemon Sugar", price: 4 },
+        { name: "Strawberry Sugar", price: 4 }, { name: "Almond Sugar", price: 4 },
+        { name: "Chocolate Chip", price: 4 }, { name: "White Chocolate Macadamia", price: 4 },
+        { name: "Oatmeal", price: 4 }
+      ]
+    }
+  ];
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#FFF9F5', color: '#4A2C2A', fontFamily: 'system-ui, -apple-system, sans-serif', padding: '60px 20px' }}>
-      <div style={{ padding: '50px 30px', borderRadius: '28px', backgroundColor: '#FFFFFF', boxShadow: '0 25px 50px rgba(74, 44, 42, 0.08)', maxWidth: '550px', width: '100%', textAlign: 'center' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#FDF9F6', color: '#1A1A1A', fontFamily: 'sans-serif', padding: '40px 20px' }}>
+      
+      <div style={{ padding: '0px 24px 40px 24px', borderRadius: '32px', backgroundColor: '#FFFFFF', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', maxWidth: '500px', width: '100%', textAlign: 'center' }}>
         
-        <img src={snsLogo} alt="SNS Cake Bakery" style={{ width: '100%', maxWidth: '380px', marginBottom: '10px' }} />
-        <div style={{ width: '40px', height: '3px', backgroundColor: '#D4A373', margin: '15px auto' }}></div>
+        <div style={{ marginTop: '-25px', marginBottom: '10px' }}> 
+          <img src={snsLogo} alt="SNS Cake Bakery" style={{ width: '100%', maxWidth: '380px', margin: '0 auto', display: 'block' }} />
+        </div>
+        
+        <div style={{ width: '40px', height: '2.5px', backgroundColor: '#D4A373', margin: '0 auto 24px auto' }}></div>
 
-        <h2 style={{ fontSize: '1.7rem', fontWeight: '500', marginBottom: '15px', color: '#5D4037' }}>
+        <h2 style={{ fontSize: '1.8rem', fontWeight: '600', marginBottom: '12px', color: '#5D4037', fontFamily: 'serif' }}>
           Something Sweet is Baking.
         </h2>
-        <p style={{ fontSize: '1.05rem', lineHeight: '1.6', color: '#6F4E37', marginBottom: '35px' }}>
+        <p style={{ fontSize: '1rem', lineHeight: '1.5', color: '#757575', marginBottom: '32px', padding: '0 10px' }}>
           Welcome! We are currently refreshing our digital storefront. Follow us for updates or browse our menu below.
         </p>
         
         <button 
-          onClick={() => setIsMenuVisible(!isMenuVisible)}
-          style={{ 
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
-            width: '100%', padding: '15px 0', background: '#FDF2E9', border: '1px solid #F5E6D3',
-            borderRadius: '12px', cursor: 'pointer', color: '#4A2C2A', fontWeight: '700', 
-            fontSize: '1.2rem', marginBottom: '10px', transition: '0.3s'
-          }}
+          onClick={() => setIsMenuVisible(!isMenuVisible)} 
+          style={{ width: '100%', padding: '16px', background: '#F9F1EB', border: 'none', borderRadius: '12px', cursor: 'pointer', color: '#1A1A1A', fontWeight: '700', fontSize: '1rem', marginBottom: '16px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}
         >
-          Browse Our Menu
-          <Icons.Chevron open={isMenuVisible} />
+          BROWSE OUR MENU {isMenuVisible ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
         </button>
 
-        <div style={{ 
-          maxHeight: isMenuVisible ? '1500px' : '0', 
-          overflow: 'hidden', 
-          transition: 'max-height 0.6s ease-in-out',
-          textAlign: 'left',
-          marginBottom: '30px'
-        }}>
-          <MenuSection title="Cakes" items={menuData.Cakes} isMasterOpen={isMenuVisible} />
-          <MenuSection title="Cupcakes" items={menuData.Cupcakes} isMasterOpen={isMenuVisible} />
-          <MenuSection title="Cookies" items={menuData.Cookies} isMasterOpen={isMenuVisible} />
-          <p style={{ fontSize: '0.75rem', fontStyle: 'italic', marginTop: '15px', color: '#A08070', textAlign: 'center', lineHeight: '1.5' }}>
-            Prices listed are the base price per serving.<br />
-            Sugar cookies with royal icing are an additional $1 per serving.<br />
-            Custom designs may incur additional charges.
-          </p>
-        </div>
+        {isMenuVisible && (
+          <div style={{ marginTop: '20px', padding: '0 4px', marginBottom: '24px' }}>
+            {menuData.map((section, idx) => (
+              <MenuSection key={idx} title={section.title} subtext={section.subtext} items={section.items} />
+            ))}
+            <div style={{ borderTop: '1px solid #E5E5E5', paddingTop: '16px' }}>
+               <p style={{ fontSize: '0.72rem', fontStyle: 'italic', color: '#8E8E8E', lineHeight: '1.4' }}>
+                Prices listed are the base price per serving. <br />
+                Sugar cookies with royal icing are an additional $1 per serving. <br />
+                Custom designs may incur additional charges.
+              </p>
+            </div>
+          </div>
+        )}
 
-        <a 
-          href="https://docs.google.com/forms/d/e/1FAIpQLSeo4RvA71NqZmQGigrypF91kL7pB7nSwmDRHL51ThcP1xDVzg/viewform" 
-          target="_blank" rel="noreferrer"
-          style={{ 
-            display: 'inline-block', padding: '14px 30px', backgroundColor: '#4A2C2A', color: '#FFF9F5', 
-            textDecoration: 'none', borderRadius: '50px', fontWeight: 'bold', fontSize: '0.9rem',
-            marginBottom: '40px', boxShadow: '0 4px 15px rgba(74, 44, 42, 0.2)'
-          }}
-        >
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeo4RvA71NqZmQGigrypF91kL7pB7nSwmDRHL51ThcP1xDVzg/viewform" target="_blank" rel="noreferrer" 
+          style={{ display: 'block', padding: '18px', backgroundColor: '#45322E', color: '#FFFFFF', textDecoration: 'none', borderRadius: '50px', fontWeight: '700', marginBottom: '16px', fontSize: '1rem' }}>
           SUBMIT AN ORDER REQUEST
         </a>
 
-        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '25px', borderTop: '1px solid #F5E6D3', gap: '25px' }}>
-          <a href="https://instagram.com/snscakebakery" target="_blank" rel="noreferrer" style={{ color: '#4A2C2A' }}><Icons.Instagram /></a>
-          <a href="https://www.facebook.com/p/SNS-Cake-Bakery-100090057444715/" target="_blank" rel="noreferrer" style={{ color: '#4A2C2A' }}><Icons.Facebook /></a>
-          <a href="https://www.youtube.com/@snscakebakery" target="_blank" rel="noreferrer" style={{ color: '#4A2C2A' }}><Icons.YouTube /></a>
-          <a href="https://pinterest.com/snscakebakery" target="_blank" rel="noreferrer" style={{ color: '#4A2C2A' }}><Icons.Pinterest /></a>
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '32px', paddingTop: '24px', borderTop: '1px solid #F0F0F0', gap: '24px' }}>
+          <a href="https://instagram.com/snscakebakery" target="_blank" rel="noreferrer" style={{ color: '#1A1A1A' }}><Icons.Instagram /></a>
+          <a href="https://www.facebook.com/p/SNS-Cake-Bakery-100090057444715/" target="_blank" rel="noreferrer" style={{ color: '#1A1A1A' }}><Icons.Facebook /></a>
+          <a href="https://www.youtube.com/@snscakebakery" target="_blank" rel="noreferrer" style={{ color: '#1A1A1A' }}><Icons.YouTube /></a>
+          <a href="https://pinterest.com/snscakebakery" target="_blank" rel="noreferrer" style={{ color: '#1A1A1A' }}><Icons.Pinterest /></a>
         </div>
       </div>
-      
-      <p style={{ marginTop: '40px', fontSize: '0.8rem', opacity: 0.5, fontWeight: 'bold', letterSpacing: '2px' }}>
+
+      <p style={{ fontSize: '0.7rem', letterSpacing: '0.2em', color: '#A68E82', fontWeight: '600', marginTop: '40px', textTransform: 'uppercase' }}>
         SNS CAKE BAKERY | EST. 2026
       </p>
     </div>
