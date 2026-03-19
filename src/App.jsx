@@ -157,8 +157,10 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/coming-soon" element={<ComingSoon />} />
-        <Route path="*" element={<Navigate to="/coming-soon" replace />} />
+        {/* Render ComingSoon directly at the home domain */}
+        <Route path="/" element={<ComingSoon />} />
+        {/* Catch-all: Redirect any typed sub-path back to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
