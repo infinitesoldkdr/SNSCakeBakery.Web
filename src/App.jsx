@@ -157,9 +157,11 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Render ComingSoon directly at the home domain */}
+        {/* Set the ComingSoon component as the index/root page */}
         <Route path="/" element={<ComingSoon />} />
-        {/* Catch-all: Redirect any typed sub-path back to home */}
+        
+        {/* Catch-all: If someone goes to /coming-soon or any other path, 
+            redirect them to the main page */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
